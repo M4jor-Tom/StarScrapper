@@ -5,15 +5,25 @@
 //Inheritance structures: Created to be used in other structures
 typedef struct location
 {
-	int x, y;
+	long int x, y, z;
 }location;
 
 typedef struct stats
 {
-	int health, mentalHealth, hunger, hygiene, stamina, karma;
+	int
+		//Person stats
+		health, mentalHealth, hunger, hygiene, stamina, karma,
+		
+		//Ship stats
+		hull, shield, energy, oxygen, temperature;
 	float money;
-	bool coronaVirus;
 }stats;
+
+typedef struct objectProperties
+{
+	unsigned int
+		length, width, height;
+}objectProperties;
 
 //System enum: Created to know structures [CREATE_STRUCTURE]
 typedef enum structId
@@ -67,36 +77,38 @@ typedef struct item
 	location loc;
 }item;
 
-typedef enum personParticularity
+typedef struct shipType
 {
-	//[CREATE_PERSON_PARTICULARITY]
-	gender, sporty, smoker, remoteWorker, lastPersonParticularityId
-}personParticularity;
+	unsigned int ID;
+	char modelName[wordLength];
+
+	objectProperties properties;
+	stats maxStats;
+}shipType;
+
+typedef struct ship
+{
+	unsigned int ID, shipTypeId;
+	char name[wordLength];
+
+	location loc;
+	stats currentStats;
+}ship;
 
 typedef struct person
 {
-	char firstName[wordLength], lastName[wordLength], handicap[wordLength];
-	unsigned int ID, aging;
-	long int houseId, placeId;
-	unsigned short int 
-		gender, //0, 1, 2
-		sportiness; //0, 1, 2
-	
-	bool smoker, remoteWorking;
-	float salary;
+	char firstName[wordLength], lastName[wordLength];
+	unsigned int ID;
+	long int placeId;
 
 	stats stats_;
 }person;
 
-typedef struct eventType // <=> action
+typedef struct eventType
 {
 	unsigned int
 		ID,
-		itemTypeConsumption,
-		copsRisk,
-		unprotectedVirusRisk,
-		protectedVirusRisk,
-		paranoidVirusRisk;
+		itemTypeConsumption;
 
 	long int
 		requiredItemTypeId,
@@ -114,9 +126,6 @@ typedef struct eventType // <=> action
 	stats 
 		onSuccess,
 		onFailure;
-	
-	//Consequence on stats for specific personParticularities (sum with consequence ?)
-	stats consequenceFor[personParticularitiesCount/* <=> personParticularity :: lastParticularityId*/];
 }eventType;
 
 typedef struct event
@@ -144,11 +153,13 @@ typedef union element
 	eventType eventType_;
 	placeType placeType_;
 	itemType itemType_;
+	shipType shipType_;
 	simulation simulation_;
 	
 	event event_;
 	place place_;
 	item item_;
+	ship ship_;
 	person person_;
 }element;
 
